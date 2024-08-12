@@ -5,6 +5,10 @@ import fs from "fs"
 const app = express()
 const upload = multer()
 
+app.get("/", (rew: Request, res: Response) => {
+	res.status(200).send("Hello world")
+})
+
 app.post("/upload", upload.any(), (req: Request, res: Response) => {
 	if (!req.file) {
 		return res.status(400).send("No file uploaded.")
