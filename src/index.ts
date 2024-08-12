@@ -14,7 +14,7 @@ app.post("/upload", upload.any(), (req: Request, res: Response) => {
 	// 	return res.status(400).send("No file uploaded.")
 	// }
 
-	console.log("Email received, body type:", req.body)
+	console.log("Email received, content map:", req.body["content-id-map"])
 	// const files = req.files
 
 	// const results: (string | Buffer)[] = []
