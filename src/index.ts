@@ -11,6 +11,7 @@ app.get("/", (rew: Request, res: Response) => {
 
 app.post("/upload", upload.any(), (req: Request, res: Response) => {
 	if (!req.file) {
+		console.log("Email: no file")
 		return res.status(400).send("No file uploaded.")
 	}
 
