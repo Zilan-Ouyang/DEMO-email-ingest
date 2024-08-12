@@ -14,8 +14,8 @@ app.post("/upload", upload.any(), (req: Request, res: Response) => {
 		return res.status(400).send("No file uploaded.")
 	}
 
-	const files = req.files
-	console.log(files)
+	console.log("Email received:", req.body)
+	// const files = req.files
 
 	// const results: (string | Buffer)[] = []
 	// const readStream = fs.createReadStream(req.file.path)
