@@ -9,21 +9,23 @@ app.get("/", (rew: Request, res: Response) => {
 	res.status(200).send("Hello world")
 })
 
-app.post("/upload", upload.single("tradeConfirmation"), (req: Request, res: Response) => {
+app.post("/upload", upload.any(), (req: Request, res: Response) => {
 	if (!req.file) {
 		return res.status(400).send("No file uploaded.")
 	}
 
-	console.log("Body:", req.body)
-	console.log("Email received, content map:", req.body["content-id-map"])
-	console.log("Content: ", JSON.parse(req.body["content-id-map"]))
+	// console.log("Body:", req.body)
+	// console.log("Email received, content map:", req.body["content-id-map"])
+	// console.log("Content: ", JSON.parse(req.body["content-id-map"]))
 
-	const file = req.file
+	const files = req.files
 
-	if (file) {
+	console.log("Files:", files)
+
+	if (files && Array.isArray(files)) {
 		try {
-			const json = JSON.stringify(file)
-			const blob = new Blob([json], { type: file.mimetype })
+			const json = JSON.stringify(files[0].buffer)
+			const blob = new Blob([json], { type: files[0].mimetype })
 			console.log(blob)
 		} catch (err: any) {
 			console.log("ERROR: ", err.message)
