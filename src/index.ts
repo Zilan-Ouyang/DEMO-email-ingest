@@ -17,6 +17,7 @@ app.post("/upload", upload.any(), (req: Request, res: Response) => {
 	console.log("Body:", req.body)
 	console.log("Email received, content map:", req.body["content-id-map"])
 	console.log("Content: ", JSON.parse(req.body["content-id-map"]))
+	console.log(req.files)
 	// const files = req.files
 
 	// const results: (string | Buffer)[] = []
