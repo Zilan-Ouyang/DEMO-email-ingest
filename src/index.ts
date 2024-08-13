@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import multer from "multer"
-// import pdfParser from "pdf-parse"
+import { PdfReader } from "pdfreader"
 
 const app = express()
 const upload = multer()
@@ -18,8 +18,11 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 	if (files && Array.isArray(files)) {
 		try {
 			console.log("test")
-			// const data = await pdfParser(files[0].buffer)
-			// console.log(data.text)
+			new PdfReader().parseBuffer(files[0].buffer, (err, item) => {
+				if (err) console.error("Error reading PDF:", err)
+				else if (!item) console.warn("end of buffer")
+				else if (item.text) console.log(item.text)
+			})
 		} catch (err: any) {
 			console.log("ERROR: ", err.message)
 		}
