@@ -28,6 +28,8 @@ app.post("/upload", upload.any(), (req: Request, res: Response) => {
 		} catch (err: any) {
 			console.log("ERROR: ", err.message)
 		}
+	} else {
+		console.log("No file")
 	}
 
 	// if (file && file.buffer) {
