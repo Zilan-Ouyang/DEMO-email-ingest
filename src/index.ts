@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import multer from "multer"
-import pdfParser from "pdf-parse"
+// import pdfParser from "pdf-parse"
 
 const app = express()
 const upload = multer()
@@ -17,8 +17,9 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 
 	if (files && Array.isArray(files)) {
 		try {
-			const data = await pdfParser(files[0].buffer)
-			console.log(data.text)
+			console.log("test")
+			// const data = await pdfParser(files[0].buffer)
+			// console.log(data.text)
 		} catch (err: any) {
 			console.log("ERROR: ", err.message)
 		}
