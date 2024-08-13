@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import multer from "multer"
-import fs from "fs"
+import pdfParser from "pdf-parse"
 
 const app = express()
 const upload = multer()
@@ -9,26 +9,16 @@ app.get("/", (rew: Request, res: Response) => {
 	res.status(200).send("Hello world")
 })
 
-app.post("/upload", upload.any(), (req: Request, res: Response) => {
-	if (!req.files) {
-		return res.status(400).send("No file uploaded.")
-	}
-
-	// console.log("Body:", req.body)
-	// console.log("Email received, content map:", req.body["content-id-map"])
-	// console.log("Content: ", JSON.parse(req.body["content-id-map"]))
-
+app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 	console.log("EMAIL RECEIVED")
 
 	const files = req.files
-
 	console.log("Files:", files)
 
 	if (files && Array.isArray(files)) {
 		try {
-			const json = JSON.stringify(files[0].buffer)
-			const blob = new Blob([json], { type: files[0].mimetype })
-			console.log(blob)
+			const data = await pdfParser(files[0].buffer)
+			console.log(data.text)
 		} catch (err: any) {
 			console.log("ERROR: ", err.message)
 		}
