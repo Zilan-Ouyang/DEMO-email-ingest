@@ -9,10 +9,10 @@ app.get("/", (rew: Request, res: Response) => {
 	res.status(200).send("Hello world")
 })
 
-app.post("/upload", upload.any(), (req: Request, res: Response) => {
-	// if (!req.file) {
-	// 	return res.status(400).send("No file uploaded.")
-	// }
+app.post("/upload", upload.single("tradeConfirmation"), (req: Request, res: Response) => {
+	if (!req.file) {
+		return res.status(400).send("No file uploaded.")
+	}
 
 	console.log("Body:", req.body)
 	console.log("Email received, content map:", req.body["content-id-map"])
@@ -22,7 +22,7 @@ app.post("/upload", upload.any(), (req: Request, res: Response) => {
 
 	if (file) {
 		try {
-			const json = JSON.stringify(file.buffer)
+			const json = JSON.stringify(file)
 			const blob = new Blob([json], { type: file.mimetype })
 			console.log(blob)
 		} catch (err: any) {
