@@ -22,9 +22,7 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 				else if (item.text) contents.push(item.text)
 			})
 
-			const table = contents.slice(10, -1)
-
-			console.log(table)
+			console.log(contents)
 		} catch (err: any) {
 			console.log("Error reading PDF:", err.message)
 		}
