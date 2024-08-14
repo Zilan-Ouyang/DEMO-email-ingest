@@ -10,51 +10,27 @@ app.get("/", (rew: Request, res: Response) => {
 })
 
 app.post("/upload", upload.any(), async (req: Request, res: Response) => {
-	console.log("EMAIL RECEIVED")
-
 	const files = req.files
-	console.log("Files:", files)
 
 	if (files && Array.isArray(files)) {
 		try {
-			console.log("test")
+			const contents: string[] = []
+
 			new PdfReader().parseBuffer(files[0].buffer, (err, item) => {
 				if (err) console.error("Error reading PDF:", err)
-				else if (!item) console.warn("end of buffer")
-				else if (item.text) console.log(item.text)
+				else if (!item) console.warn("--- END OF BUFFER ---")
+				else if (item.text) contents.push(item.text)
 			})
+
+			const table = contents.slice(10, -1)
+
+			console.log(table)
 		} catch (err: any) {
-			console.log("ERROR: ", err.message)
+			console.log("Error reading PDF:", err.message)
 		}
 	} else {
-		console.log("No file")
+		console.log("--- NO FILE ---")
 	}
-
-	// if (file && file.buffer) {
-	// 	const results: (string | Buffer)[] = []
-	// 	const readStream = fs.createReadStream(file.buffer)
-
-	// 	readStream.on("open", () => {
-	// 		console.log("PDF file stream opened successfully")
-	// 	})
-
-	// 	readStream.on("data", (chunk) => {
-	// 		console.log("Reading chunk:", chunk)
-	// 		results.push(chunk)
-	// 	})
-
-	// 	readStream.on("end", () => {
-	// 		console.log("Finished reading the PDF file")
-	// 		console.log(results)
-
-	// 	})
-
-	// 	readStream.on("error", (err) => {
-	// 		console.error("An error occurred while reading the PDF file:", err)
-
-	// 		res.status(500).send(err.message)
-	// 	})
-	// }
 
 	res.status(200).send()
 })
