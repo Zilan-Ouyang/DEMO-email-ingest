@@ -24,6 +24,8 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 					for (let i = 0; i < table.length; i += 2) {
 						results.push(table.slice(i, i + 2))
 					}
+
+					console.log(results)
 				} else if (item.text) contents.push(item.text)
 			})
 		} catch (err: any) {
