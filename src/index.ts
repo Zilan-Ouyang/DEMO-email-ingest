@@ -9,6 +9,17 @@ app.get("/", (rew: Request, res: Response) => {
 	res.status(200).send("Hello world")
 })
 
+const generateCsv = (data: string[]) => {
+	const results = []
+	for (let i = 0; i < data.length; i += 2) {
+		results.push(data.slice(i, i + 2))
+	}
+
+	const csvContent = "data:text/csv;charset=utf-8," + results.map((e) => e.join(",")).join("\n")
+
+	return csvContent
+}
+
 app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 	const files = req.files
 
@@ -19,21 +30,14 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 			new PdfReader().parseBuffer(files[0].buffer, (err, item) => {
 				if (err) console.error("Error reading PDF:", err)
 				else if (!item) {
-					const table = contents.slice(10)
-					const results = []
-					for (let i = 0; i < table.length; i += 2) {
-						results.push(table.slice(i, i + 2))
-					}
-
-					console.log(results)
+					const csv = generateCsv(contents.slice(10))
+					console.log(csv)
 				} else if (item.text) contents.push(item.text)
 			})
 		} catch (err: any) {
 			console.log("Error reading PDF:", err.message)
 		}
-	} else {
-		console.log("--- NO FILE ---")
-	}
+	} else console.log("--- NO FILE ---")
 
 	res.status(200).send()
 })
