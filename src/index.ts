@@ -18,8 +18,13 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 
 			new PdfReader().parseBuffer(files[0].buffer, (err, item) => {
 				if (err) console.error("Error reading PDF:", err)
-				else if (!item) console.log(contents.slice(10))
-				else if (item.text) contents.push(item.text)
+				else if (!item) {
+					const table = contents.slice(10)
+					const results = []
+					for (let i = 0; i < table.length; i += 2) {
+						results.push(table.slice(i, i + 2))
+					}
+				} else if (item.text) contents.push(item.text)
 			})
 		} catch (err: any) {
 			console.log("Error reading PDF:", err.message)
