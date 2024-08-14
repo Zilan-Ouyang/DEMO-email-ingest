@@ -19,7 +19,10 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 			new PdfReader().parseBuffer(files[0].buffer, (err, item) => {
 				if (err) console.error("Error reading PDF:", err)
 				else if (!item) console.warn("--- END OF BUFFER ---")
-				else if (item.text) contents.push(item.text)
+				else if (item.text) {
+					console.log(item.text)
+					contents.push(item.text)
+				}
 			})
 
 			console.log(contents)
