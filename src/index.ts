@@ -1,3 +1,4 @@
+import { generateCsv } from "@/lib/generate-csv"
 import express, { Request, Response } from "express"
 import multer from "multer"
 import { PdfReader } from "pdfreader"
@@ -8,17 +9,6 @@ const upload = multer()
 app.get("/", (rew: Request, res: Response) => {
 	res.status(200).send("Hello world")
 })
-
-const generateCsv = (data: string[]) => {
-	const results = []
-	for (let i = 0; i < data.length; i += 2) {
-		results.push(data.slice(i, i + 2))
-	}
-
-	const csvContent = "data:text/csv;charset=utf-8," + results.map((e) => e.join(",")).join("\n")
-
-	return csvContent
-}
 
 app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 	const files = req.files
