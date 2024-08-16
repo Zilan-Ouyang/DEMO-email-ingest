@@ -7,10 +7,6 @@ import { authorize, uploadFile } from "./lib/save-to-drive"
 const app = express()
 const upload = multer()
 
-app.get("/", (req: Request, res: Response) => {
-	res.status(200).send("Hello world")
-})
-
 app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 	const files = req.files
 
