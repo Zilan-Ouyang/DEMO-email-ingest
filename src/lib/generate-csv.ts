@@ -4,7 +4,7 @@ export const generateCsv = (data: string[]) => {
 		results.push(data.slice(i, i + 2))
 	}
 
-	const csvContent = "data:text/csv;charset=utf-8," + results.map((e) => e.join(",")).join("\n")
+	const csvContent = results.map((e) => e.map((str) => str.replace(",", "")).join(",")).join("\n")
 
 	return csvContent
 }
