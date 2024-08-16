@@ -2,11 +2,12 @@ import { generateCsv } from "@/lib/generate-csv"
 import express, { Request, Response } from "express"
 import multer from "multer"
 import { PdfReader } from "pdfreader"
+import { authorize, uploadFile } from "./lib/save-to-drive"
 
 const app = express()
 const upload = multer()
 
-app.get("/", (rew: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
 	res.status(200).send("Hello world")
 })
 
@@ -17,11 +18,12 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 		try {
 			const contents: string[] = []
 
-			new PdfReader().parseBuffer(files[0].buffer, (err, item) => {
+			new PdfReader().parseBuffer(files[0].buffer, async (err, item) => {
 				if (err) console.error("Error reading PDF:", err)
 				else if (!item) {
 					const csv = generateCsv(contents.slice(10))
-					console.log(csv)
+					const driveClient = await authorize()
+					await uploadFile(driveClient, csv)
 				} else if (item.text) contents.push(item.text)
 			})
 		} catch (err: any) {
