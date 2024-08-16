@@ -1,32 +1,29 @@
-import fs from "fs"
+// https://protocoderspoint.com/nodejs-script-to-upload-file-to-google-drive-using-googleapis/
+
+import { JWT } from "google-auth-library"
 import { google } from "googleapis"
 
 export const authorize = async () => {
+	const EMAIL = process.env.GOOGLE_CLIENT_EMAIL
+	const KEY = process.env.GOOGLE_CLIENT_PRIVATE_KEY
+	if (!EMAIL || !KEY) throw new Error("Missing required environment variables")
 	const SCOPE = ["https://www.googleapis.com/auth/drive"]
 
-	const authClient = new google.auth.JWT(
-		process.env.GOOGLE_CLIENT_EMAIL,
-		undefined,
-		process.env.GOOGLE_CLIENT_PRIVATE_KEY!.replace(/\\n/g, "\n"),
-		SCOPE
-	)
+	const authClient = new google.auth.JWT(EMAIL, undefined, KEY.replace(/\\n/g, "\n"), SCOPE)
 
 	await authClient.authorize()
 
 	return authClient
 }
 
-// TODO Add type to param
-export const uploadFile = async (authClient: any, csv: string) => {
+export const uploadFile = async (authClient: JWT, csv: string) => {
 	const drive = google.drive({ version: "v3", auth: authClient })
 
-	const fileMetaData = {
-		name: "mydrivetest.csv",
-		parents: ["1iLA61lSXk9qTy7SxZmBnOKMtmLpVdZHY"] // A folder ID to which file will get uploaded
-	}
-
 	const res = await drive.files.create({
-		requestBody: fileMetaData,
+		requestBody: {
+			name: `${Date.now()}.csv`,
+			parents: ["1iLA61lSXk9qTy7SxZmBnOKMtmLpVdZHY"]
+		},
 		media: {
 			body: csv,
 			mimeType: "text/csv"

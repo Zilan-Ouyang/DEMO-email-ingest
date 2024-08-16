@@ -23,7 +23,9 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 				else if (!item) {
 					const csv = generateCsv(contents.slice(10))
 					const driveClient = await authorize()
-					await uploadFile(driveClient, csv)
+					const res = await uploadFile(driveClient, csv)
+					if (res.success) console.log("Uploaded CSV file to drive")
+					else console.log("Failed to upload CSV file to drive")
 				} else if (item.text) contents.push(item.text)
 			})
 		} catch (err: any) {
