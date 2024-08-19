@@ -1,7 +1,8 @@
 import { PdfReader } from "pdfreader"
 
 export const readFiles = (
-	files: { [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[] | undefined
+	files: { [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[] | undefined,
+	callback: (content: string[]) => void
 ) => {
 	if (!files) throw new Error("No files found")
 
@@ -11,8 +12,7 @@ export const readFiles = (
 
 	new PdfReader().parseBuffer(files[0].buffer, async (err, item) => {
 		if (err) throw new Error(`Error reading PDF: ${err}`)
+		if (!item) callback(contents)
 		else if (item?.text) contents.push(item.text)
 	})
-
-	return contents
 }
