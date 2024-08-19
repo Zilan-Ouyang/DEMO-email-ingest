@@ -1,5 +1,3 @@
-// https://protocoderspoint.com/nodejs-script-to-upload-file-to-google-drive-using-googleapis/
-
 import { JWT } from "google-auth-library"
 import { google } from "googleapis"
 
@@ -22,7 +20,6 @@ export const authorize = async () => {
 
 /**
  * Saves a file to Google Drive
- * @
  * @param authClient (google.auth.JWT) JWT auth client
  * @param csv (string) CSV formatted string to be saved to Google Drive
  * @returns (Promise<{ success: boolean, error?: string }>) Success status from API request
