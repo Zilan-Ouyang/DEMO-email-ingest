@@ -13,12 +13,12 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 
 	// TODO Secure request
 	const body = req.body
-	console.log(body)
+	console.log(req)
 
 	const files = req.files
 
 	try {
-		const content = readFiles(files, async (content) => {
+		readFiles(files, async (content) => {
 			if (content.length === 0) throw new Error("No parsed data from PDF")
 
 			const tableContent = content.slice(10)
