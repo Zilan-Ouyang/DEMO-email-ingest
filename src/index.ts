@@ -3,7 +3,7 @@ import express, { type Request, type Response } from "express"
 import multer from "multer"
 import { authorize, uploadFile } from "./lib/save-to-drive"
 import { readFiles } from "./lib/read-files"
-import { content } from "googleapis/build/src/apis/content"
+import * as crypto from "crypto"
 
 const app = express()
 const upload = multer()
@@ -11,13 +11,20 @@ const upload = multer()
 app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 	console.log("Received message")
 
-	// TODO Secure request
-	const body = req.body
-	console.log(req)
-
-	const files = req.files
-
 	try {
+		const body = req.body
+		if (!body) throw new Error("No request body")
+
+		const apiKey = process.env.MAILGUN_API_KEY
+		if (!apiKey) throw new Error("No Mailgun API key")
+
+		const value = body.timestamp + body.token
+		const hash = crypto.createHmac("sha256", apiKey).update(value).digest("hex")
+
+		if (hash !== body.signature) throw new Error("Invalid signature")
+
+		const files = req.files
+
 		readFiles(files, async (content) => {
 			if (content.length === 0) throw new Error("No parsed data from PDF")
 
