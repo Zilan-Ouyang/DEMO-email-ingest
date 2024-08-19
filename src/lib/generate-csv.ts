@@ -1,3 +1,8 @@
+/**
+ * Creates a CSV for Flowtraders transaction confirmation
+ * @param data (string[]) Array of table entries from Flowtraders transaction confirmation
+ * @returns (string) String formatted for CSV filetype that mimics table provided by Flowtraders transaction confirmation
+ */
 export const generateCsv = (data: string[]) => {
 	const results = []
 	for (let i = 0; i < data.length; i += 2) {

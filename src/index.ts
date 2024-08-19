@@ -1,9 +1,9 @@
 import { generateCsv } from "@/lib/generate-csv"
+import { readFiles } from "@/lib/read-files"
+import { authorize, uploadFile } from "@/lib/save-to-drive"
+import crypto from "crypto"
 import express, { type Request, type Response } from "express"
 import multer from "multer"
-import { authorize, uploadFile } from "./lib/save-to-drive"
-import { readFiles } from "./lib/read-files"
-import * as crypto from "crypto"
 
 const app = express()
 const upload = multer()
@@ -12,6 +12,7 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 	console.log("Received message")
 
 	try {
+		// Validate request
 		const body = req.body
 		if (!body) throw new Error("No request body")
 
@@ -25,12 +26,16 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 
 		const files = req.files
 
+		// Read in files from Mailgun
 		readFiles(files, async (content) => {
 			if (content.length === 0) throw new Error("No parsed data from PDF")
 
+			// Extract table data from PDF text
+			// Flowdesk table starton on text entry 10 and ends on final text entry
 			const tableContent = content.slice(10)
 			const csv = generateCsv(tableContent)
 
+			// Create Google Drive client and save CSV string
 			const driveClient = await authorize()
 			const res = await uploadFile(driveClient, csv)
 
@@ -41,6 +46,8 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 		// TODO Log error somewhere or push notification
 		console.log(err.message)
 	} finally {
+		// Send 200 response regardless of outcome
+		// This is done so Mailgun webhook doesn't retry endpoint
 		res.status(200).send()
 	}
 })

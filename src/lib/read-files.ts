@@ -1,5 +1,10 @@
 import { PdfReader } from "pdfreader"
 
+/**
+ * Reads first file of Multer files input
+ * @param files ({ [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[] | undefined) The files to be read
+ * @param callback ((content: string[]) => void) Callback with desired action to be taken with parsed file
+ */
 export const readFiles = (
 	files: { [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[] | undefined,
 	callback: (content: string[]) => void
