@@ -11,7 +11,7 @@ const parser = bodyParser.urlencoded({ extended: true })
 const upload = multer()
 
 app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
-	console.log("Received message")
+	console.log("Email reveived")
 
 	try {
 		// Validate request
@@ -55,10 +55,10 @@ app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
 })
 
 app.post("/wintermute", parser, async (req: Request, res: Response) => {
-	console.log("Email received", req.body)
+	console.log("Email received")
 
 	const body = req.body
-	console.log(body["stripped-text"])
+	console.log(body["stripped-text"].split("\r\n"))
 
 	res.status(200).send()
 })
