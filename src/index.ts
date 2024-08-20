@@ -61,7 +61,9 @@ app.post("/wintermute", parser, async (req: Request, res: Response) => {
 	const bodyArr: string[] = body["stripped-text"].split("\r\n")
 	const filteredBodyArr = bodyArr.filter((e) => e !== "")
 
-	const date = filteredBodyArr[5].split(" ").slice(1)
+	const dateStr = filteredBodyArr[5].split(" ").slice(1).join(" ")
+	const date = Math.floor(new Date(dateStr).getTime() / 1000)
+
 	const txInfo = filteredBodyArr[8].split(" ")
 
 	console.log("date:", date)
