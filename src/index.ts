@@ -58,7 +58,9 @@ app.post("/wintermute", parser, async (req: Request, res: Response) => {
 	console.log("Email received")
 
 	const body = req.body
-	console.log(body["stripped-text"].split("\r\n"))
+	const bodyArr: string[] = body["stripped-text"].split("\r\n")
+	const filteredBodyArr = bodyArr.filter((e) => e !== "")
+	console.log(filteredBodyArr)
 
 	res.status(200).send()
 })
