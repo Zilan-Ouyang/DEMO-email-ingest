@@ -1,11 +1,13 @@
 import { generateCsv } from "@/lib/generate-csv"
 import { readFiles } from "@/lib/read-files"
 import { authorize, uploadFile } from "@/lib/save-to-drive"
+import bodyParser from "body-parser"
 import crypto from "crypto"
 import express, { type Request, type Response } from "express"
 import multer from "multer"
 
 const app = express()
+const parser = bodyParser.json()
 const upload = multer()
 
 app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
@@ -52,8 +54,9 @@ app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
 	}
 })
 
-app.post("/wintermute", async (req: Request, res: Response) => {
-	console.log("Email received", req)
+app.post("/wintermute", parser, async (req: Request, res: Response) => {
+	console.log("Email received", req.body)
+	res.status(200).send()
 })
 
 app.listen(3000, () => {
