@@ -61,13 +61,28 @@ app.post("/wintermute", parser, async (req: Request, res: Response) => {
 	const bodyArr: string[] = body["stripped-text"].split("\r\n")
 	const filteredBodyArr = bodyArr.filter((e) => e !== "")
 
+	const csvArr: string[][] = []
+
 	const dateStr = filteredBodyArr[5].split(" ").slice(1).join(" ")
 	const date = Math.floor(new Date(dateStr).getTime() / 1000)
 
-	const txInfo = filteredBodyArr[8].split(" ")
+	csvArr.push(["Date", String(date)])
 
-	console.log("date:", date)
-	console.log("tx info:", txInfo)
+	const txInfo = filteredBodyArr[8].split(" ")
+	const side = txInfo[0] === "Sells" ? "SELL" : "BUY"
+	const coin = txInfo[2]
+	const quantity = txInfo[1]
+	const price = txInfo[7]
+	const settlementCurrency = txInfo[8]
+	csvArr.push(
+		["Side", side],
+		["Coin", coin],
+		["Quantity", quantity],
+		["Price", price],
+		["Settlement Currency", settlementCurrency]
+	)
+
+	console.log(csvArr)
 
 	res.status(200).send()
 })
