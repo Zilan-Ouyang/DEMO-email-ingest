@@ -56,6 +56,10 @@ app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
 
 app.post("/wintermute", parser, async (req: Request, res: Response) => {
 	console.log("Email received", req.body)
+
+	const body = req.body
+	console.log(body["stripped-text"])
+
 	res.status(200).send()
 })
 
