@@ -8,7 +8,7 @@ import multer from "multer"
 const app = express()
 const upload = multer()
 
-app.post("/upload", upload.any(), async (req: Request, res: Response) => {
+app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
 	console.log("Received message")
 
 	try {
@@ -50,6 +50,10 @@ app.post("/upload", upload.any(), async (req: Request, res: Response) => {
 		// This is done so Mailgun webhook doesn't retry endpoint
 		res.status(200).send()
 	}
+})
+
+app.post("/wintermute", async (req: Request, res: Response) => {
+	console.log("Email received", req.body)
 })
 
 app.listen(3000, () => {
