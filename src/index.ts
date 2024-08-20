@@ -7,7 +7,7 @@ import express, { type Request, type Response } from "express"
 import multer from "multer"
 
 const app = express()
-const parser = bodyParser.json()
+const parser = bodyParser.urlencoded({ extended: true })
 const upload = multer()
 
 app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
