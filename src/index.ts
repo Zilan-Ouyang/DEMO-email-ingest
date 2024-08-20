@@ -53,7 +53,7 @@ app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
 })
 
 app.post("/wintermute", async (req: Request, res: Response) => {
-	console.log("Email received", req.body)
+	console.log("Email received", req)
 })
 
 app.listen(3000, () => {
