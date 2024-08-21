@@ -1,5 +1,10 @@
 import { readPdf } from "@/lib/pdf"
 
+/**
+ * Reads email file attachments and creates array of values ready for CSV formatting
+ * @param files ({ [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[] | undefined) Files from Multer
+ * @returns (string[][]) Array of rows to be formatted into CSV
+ */
 export const parseFlowdeskTransactionReport = async (
 	files: { [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[] | undefined
 ) => {

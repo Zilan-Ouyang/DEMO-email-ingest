@@ -1,3 +1,8 @@
+/**
+ *	Reads email body and creates array of values ready for CSV formatting
+ * @param strippedText (string) Stripped text from email body
+ * @returns (string[][]) Array of rows to be formatted into CSV
+ */
 export const parseWintermuteTransactionReport = (strippedText: string) => {
 	if (typeof strippedText !== "string")
 		throw new Error("Invalid stripped-text property on request body")

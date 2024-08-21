@@ -20,6 +20,7 @@ export const authorize = async () => {
 
 /**
  * Saves a file to Google Drive
+ * Current drive folder is HARD CODED - "parent" value should be changed to desired folder location
  * @param authClient (google.auth.JWT) JWT auth client
  * @param csv (string) CSV formatted string to be saved to Google Drive
  * @returns (Promise<{ success: boolean, error?: string }>) Success status from API request

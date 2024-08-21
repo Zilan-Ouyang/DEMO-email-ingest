@@ -1,9 +1,9 @@
 import { PdfReader } from "pdfreader"
 
 /**
- * Reads first file of Multer files input
- * @param files ({ [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[] | undefined) The files to be read
- * @param callback ((content: string[]) => void) Callback with desired action to be taken with parsed file
+ * Reads file from Multer
+ * @param files (Express.Multer.File) The file to be read
+ * @returns (string[]) Array of file text
  */
 export const readPdf = (file: Express.Multer.File) => {
 	return new Promise<string[]>((resolve, reject) => {
