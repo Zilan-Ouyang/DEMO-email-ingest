@@ -9,9 +9,9 @@ export const parseFlowdeskTransactionReport = async (
 	const fileArr = await readPdf(files[0])
 
 	const [m, d, y] = fileArr[3].split("/")
-	console.log(m, d, y)
 
-	const date = String(Math.floor(new Date(`${y}-${m}-${d}T00:00:00Z`).getTime() / 1000))
+	const dateObj = Math.floor(new Date(`${y}-${m}-${d}T00:00:00Z`).getTime() / 1000)
+	const date = String(dateObj)
 	const coin = fileArr[13]
 	const side = fileArr[15]
 	const quantity = parseFloat(fileArr[17].replace(/,/g, "")).toString()
