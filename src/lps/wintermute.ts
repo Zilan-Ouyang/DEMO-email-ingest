@@ -2,6 +2,8 @@ export const parseWintermuteTransactionReport = (strippedText: string) => {
 	if (typeof strippedText !== "string")
 		throw new Error("Invalid stripped-text property on request body")
 
+	// TODO if images or other media is attached to email, method will fail
+	// TODO confirm structure of transaction report with Wintermute
 	const bodyArr: string[] = strippedText.split("\r\n")
 	const filteredBodyArr = bodyArr.filter((e) => e !== "")
 
@@ -9,7 +11,7 @@ export const parseWintermuteTransactionReport = (strippedText: string) => {
 
 	const rawDate = filteredBodyArr[5].split(" ").slice(1).join(" ")
 	const txInfo = filteredBodyArr[8].split(" ")
-	console.log(txInfo)
+
 	const date = String(Math.floor(new Date(rawDate).getTime() / 1000))
 	const side = txInfo[0] === "Sells" ? "SELL" : "BUY"
 	const coin = txInfo[2]

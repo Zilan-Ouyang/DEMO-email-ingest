@@ -8,12 +8,13 @@ export const parseFlowdeskTransactionReport = async (
 
 	const fileArr = await readPdf(files[0])
 
-	// MARK month and day may need to be switched - example is 7/09/2024
+	// TODO month and day may need to be switched - example is 7/09/2024
+	// TODO date is set to "Receipt date" on transaction report - is this accurate enough?
 	const [m, d, y] = fileArr[3].split("/")
 
 	const date = String(
 		Math.floor(new Date(parseFloat(y), parseFloat(m), parseFloat(d)).getTime() / 1000)
-	) // MARK Date is set to "Receipt date" on transaction report - is this accurate enough?
+	)
 	const coin = fileArr[13]
 	const side = fileArr[15]
 	const quantity = parseFloat(fileArr[17].replace(/,/g, "")).toString()
