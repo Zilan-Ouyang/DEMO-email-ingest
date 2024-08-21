@@ -10,7 +10,9 @@ export const parseFlowdeskTransactionReport = async (
 
 	const [m, d, y] = fileArr[3].split("/")
 
-	const dateObj = Math.floor(new Date(`${y}-${m}-${d}T00:00:00Z`).getTime() / 1000)
+	const dateObj = Math.floor(
+		new Date(`${parseFloat(y)}-${parseFloat(m)}-${parseFloat(d)}T00:00:00Z`).getTime() / 1000
+	)
 	const date = String(dateObj)
 	const coin = fileArr[13]
 	const side = fileArr[15]
