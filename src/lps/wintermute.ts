@@ -9,7 +9,7 @@ export const parseWintermuteTransactionReport = (strippedText: string) => {
 
 	const rawDate = filteredBodyArr[5].split(" ").slice(1).join(" ")
 	const txInfo = filteredBodyArr[8].split(" ")
-
+	console.log(txInfo)
 	const date = String(Math.floor(new Date(rawDate).getTime() / 1000))
 	const side = txInfo[0] === "Sells" ? "SELL" : "BUY"
 	const coin = txInfo[2]
