@@ -13,7 +13,7 @@ export const parseWintermuteTransactionReport = (strippedText: string) => {
 	const date = String(Math.floor(new Date(rawDate).getTime() / 1000))
 	const side = txInfo[0] === "Sells" ? "SELL" : "BUY"
 	const coin = txInfo[2]
-	const quantity = txInfo[1].replace(",", "")
+	const quantity = parseFloat(txInfo[1].replace(/,/g, "")).toString()
 	const price = txInfo[7]
 	const settlementCurrency = txInfo[8]
 
