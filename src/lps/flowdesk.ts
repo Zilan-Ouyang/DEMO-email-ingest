@@ -7,9 +7,9 @@ export const parseFlowdeskTransactionReport = async (
 	if (!Array.isArray(files)) throw new Error("Files not in array format")
 
 	const fileArr = await readPdf(files[0])
-	console.log(fileArr)
 
 	const [m, d, y] = fileArr[3].split("/")
+	console.log(m, d, y)
 
 	const date = String(Math.floor(new Date(`${y}-${m}-${d}T00:00:00Z`).getTime() / 1000))
 	const coin = fileArr[13]
