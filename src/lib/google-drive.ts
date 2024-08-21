@@ -24,12 +24,12 @@ export const authorize = async () => {
  * @param csv (string) CSV formatted string to be saved to Google Drive
  * @returns (Promise<{ success: boolean, error?: string }>) Success status from API request
  */
-export const uploadFile = async (authClient: JWT, csv: string) => {
+export const uploadCsv = async (authClient: JWT, csv: string, name: string) => {
 	const drive = google.drive({ version: "v3", auth: authClient })
 
 	const res = await drive.files.create({
 		requestBody: {
-			name: `${Date.now()}.csv`,
+			name: `${name}.csv`,
 			parents: ["1iLA61lSXk9qTy7SxZmBnOKMtmLpVdZHY"]
 		},
 		media: {

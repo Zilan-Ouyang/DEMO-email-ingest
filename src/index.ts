@@ -1,90 +1,75 @@
-import { generateCsv } from "@/lib/generate-csv"
-import { readFiles } from "@/lib/read-files"
-import { authorize, uploadFile } from "@/lib/save-to-drive"
+import { makeCsv } from "@/lib/csv"
+import { authorize, uploadCsv } from "@/lib/google-drive"
+import { parseFlowdeskTransactionReport } from "@/lps/flowdesk"
+import { parseWintermuteTransactionReport } from "@/lps/wintermute"
 import bodyParser from "body-parser"
 import crypto from "crypto"
 import express, { type Request, type Response } from "express"
 import multer from "multer"
+import { buildSignature } from "./lib/mailgun"
 
 const app = express()
 const parser = bodyParser.urlencoded({ extended: true })
 const upload = multer()
 
 app.post("/flowdesk", upload.any(), async (req: Request, res: Response) => {
-	console.log("Email reveived")
+	console.log("Email reveived from Flowdesk")
 
 	try {
-		// Validate request
+		// Extract body
 		const body = req.body
 		if (!body) throw new Error("No request body")
 
-		const apiKey = process.env.MAILGUN_API_KEY
-		if (!apiKey) throw new Error("No Mailgun API key")
+		// Validate request
+		const signature = buildSignature(body)
+		if (signature !== body.signature) throw new Error("Invalid signature")
 
-		const value = body.timestamp + body.token
-		const hash = crypto.createHmac("sha256", apiKey).update(value).digest("hex")
+		// Parse input and generate CSV
+		const report = await parseFlowdeskTransactionReport(req.files)
+		const csv = makeCsv(report)
 
-		if (hash !== body.signature) throw new Error("Invalid signature")
+		// Save CSV to drive
+		const driveClient = await authorize()
+		const driveRes = await uploadCsv(driveClient, csv, `${Date.now()}_flowdesk`)
 
-		const files = req.files
-
-		// Read in files from Mailgun
-		readFiles(files, async (content) => {
-			if (content.length === 0) throw new Error("No parsed data from PDF")
-
-			// Extract table data from PDF text
-			// Flowdesk table starton on text entry 10 and ends on final text entry
-			const tableContent = content.slice(10)
-			const csv = generateCsv(tableContent)
-
-			// Create Google Drive client and save CSV string
-			const driveClient = await authorize()
-			const res = await uploadFile(driveClient, csv)
-
-			if (res.success) console.log("Uploaded CSV file to drive")
-			else throw new Error("Failed to upload CSV file to drive")
-		})
+		if (driveRes.success) console.log("Uploaded CSV file to drive")
+		else throw new Error("Failed to upload CSV file to drive")
 	} catch (err: any) {
 		// TODO Log error somewhere or push notification
 		console.log(err.message)
 	} finally {
-		// Send 200 response regardless of outcome
-		// This is done so Mailgun webhook doesn't retry endpoint
 		res.status(200).send()
 	}
 })
 
 app.post("/wintermute", parser, async (req: Request, res: Response) => {
-	console.log("Email received")
+	console.log("Email received from Wintermute")
 
-	const body = req.body
-	const bodyArr: string[] = body["stripped-text"].split("\r\n")
-	const filteredBodyArr = bodyArr.filter((e) => e !== "")
+	try {
+		// Extract body
+		const body = req.body
+		if (!body) throw new Error("No request body")
 
-	const csvArr: string[][] = []
+		// Validate request
+		const signature = buildSignature(body)
+		if (signature !== body.signature) throw new Error("Invalid signature")
 
-	const dateStr = filteredBodyArr[5].split(" ").slice(1).join(" ")
-	const date = Math.floor(new Date(dateStr).getTime() / 1000)
+		// Parse input and generate CSV
+		const report = parseWintermuteTransactionReport(body["stripped-text"])
+		const csv = makeCsv(report)
 
-	csvArr.push(["Date", String(date)])
+		// Save CSV to drive
+		const driveClient = await authorize()
+		const driveRes = await uploadCsv(driveClient, csv, `${Date.now()}_wintermute`)
 
-	const txInfo = filteredBodyArr[8].split(" ")
-	const side = txInfo[0] === "Sells" ? "SELL" : "BUY"
-	const coin = txInfo[2]
-	const quantity = txInfo[1]
-	const price = txInfo[7]
-	const settlementCurrency = txInfo[8]
-	csvArr.push(
-		["Side", side],
-		["Coin", coin],
-		["Quantity", quantity],
-		["Price", price],
-		["Settlement Currency", settlementCurrency]
-	)
-
-	console.log(csvArr)
-
-	res.status(200).send()
+		if (driveRes.success) console.log("Uploaded CSV file to drive")
+		else throw new Error("Failed to upload CSV file to drive")
+	} catch (err: any) {
+		// TODO Log error somewhere or push notification
+		console.log(err.message)
+	} finally {
+		res.status(200).send()
+	}
 })
 
 app.listen(3000, () => {
