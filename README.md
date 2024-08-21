@@ -1,3 +1,9 @@
+# ENV
+
+-   GOOGLE_CLIENT_EMAIL
+-   GOOGLE_CLIENT_PRIVATE_KEY
+-   MAILGUN_API_KEY
+
 # Documentation Refs
 
 -   [Inbound Parse Docs](https://documentation.mailgun.com/docs/mailgun/user-manual/receive-forward-store/)

@@ -6,10 +6,10 @@ import { google } from "googleapis"
  * @returns (google.auth.JWT) JWT auth client
  */
 export const authorize = async () => {
+	const SCOPE = ["https://www.googleapis.com/auth/drive"]
 	const EMAIL = process.env.GOOGLE_CLIENT_EMAIL
 	const KEY = process.env.GOOGLE_CLIENT_PRIVATE_KEY
 	if (!EMAIL || !KEY) throw new Error("Missing required environment variables")
-	const SCOPE = ["https://www.googleapis.com/auth/drive"]
 
 	const authClient = new google.auth.JWT(EMAIL, undefined, KEY.replace(/\\n/g, "\n"), SCOPE)
 
